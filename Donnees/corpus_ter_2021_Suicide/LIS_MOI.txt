@@ -1,0 +1,5 @@
+Ce corpus est composé de mots critiques recherchés via l'API Twitter.
+
+La recherche a été éffectuée sur 5 périodes différentes entre 2019 et 2021.
+
+Equipe TER So'Suicide 2020-2021.
