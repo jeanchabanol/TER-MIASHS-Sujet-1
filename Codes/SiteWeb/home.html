@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUICID'PREDICT</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        var divs = ["resum1", "resum2", "resum3", "resum4", "resum5", "rien"];
+        var visibleId = null;
+
+        function show(id) {
+            if (visibleId !== id) {
+                visibleId = id;
+            }
+            hide();
+        }
+
+        function hide() {
+            var div, i, id;
+            for (i = 0; i < divs.length; i++) {
+                id = divs[i];
+                div = document.getElementById(id);
+                if (visibleId == id) {
+                    div.style.display = "block";
+                } else {
+                    div.style.display = "none";
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <table cellpadding="0" cellspacing="0" style="margin: auto;  width:100%;">
+        <tr>
+            <td>
+                <h1>
+                    <a onclick="show('rien')" name="a">SUICID'PREDICT</a></h1>
+
+                <nav id="menu">
+                    <ul>
+                        <li><a onclick="show('resum1')" name="a">REDDIT</a></li>
+                        <li><a onclick="show('resum2')" name="a">TWITTER</a></li>
+                        <li><a onclick="show('resum3')" name="a">WIKIPEDIA</a></li>
+                        <li><a onclick="show('resum4')" name="a">DONNEES</a></li>
+                        <li id="droite"><a onclick="show('resum5')" name="a">QUI SOMMES-NOUS ?</a></li>
+                    </ul>
+                </nav>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="div" id="resum1">
+                    <h2>Données</h2>
+                    <div class="divInterne">
+                        <p style=" text-align:justify;color : blue;"> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l 'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla
+                            ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s 'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.
+                            Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+                        </p>
+                    </div>
+                    <h2>Résultats</h2>
+                </div>
+                <div class="div" id="resum2">
+                    <div class="divInterne">
+
+                        <p style=" text-align:justify;color:purple"> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l 'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla
+                            ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s 'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.
+                            Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+                        </p>
+                    </div>
+                </div>
+                <div class="div" id="resum3">
+                    <div class="divInterne">
+
+                        <p style=" text-align:justify;color : red;"> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l 'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla
+                            ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s 'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.
+                            Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+                        </p>
+                    </div>
+                </div>
+                <div class="div" id="resum4">
+                    <div class="divInterne">
+                        <p style=" text-align:justify;color : pink;"> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l 'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla
+                            ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s 'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.
+                            Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+                        </p>
+                    </div>
+                </div>
+                <div class="div" id="resum5">
+                    <div class="divInterne">
+                        <p style=" text-align:justify;color : yellow;"> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l 'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla
+                            ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s 'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié.
+                            Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+                        </p>
+                    </div>
+                </div>
+                <div class="content" id="rien">
+                    <p style=" text-align:justify;"> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l 'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble
+                        des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s 'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé
+                        dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+                    </p>
+                </div>
+            </td>
+        </tr>
+</body>
+
+</html>
