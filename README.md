@@ -8,7 +8,7 @@
 
 **Autre encadrant :** Florian Lombardo (florian.lombardo@univ-montp3.fr)
 
-Membres du groupe :
+**Membres du groupe :**
 
 - BETEILLE Lisa : lisa.beteille@etu.univ-montp3.fr
 - CALSACY Matéo : mateo.calsacy@etu.univ-montp3.fr
