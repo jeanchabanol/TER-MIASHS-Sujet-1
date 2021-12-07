@@ -5,6 +5,7 @@
 **Court descriptif du sujet :** L'objectif est de prédire des comportements suicidaires au travers de l'élaboration d'un algorithme et de l'exploitation de données publiques provenants de Twitter, Reddit et Wikipédia.
 
 **Encadrant pédagogique:** Sandra Bringay (sandra.bringay@univ-montp3.fr)
+
 **Autre encadrant :** Florian Lombardo (florian.lombardo@univ-montp3.fr)
 
 Membres du groupe :
