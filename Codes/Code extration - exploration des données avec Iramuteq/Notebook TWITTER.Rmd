@@ -1,0 +1,163 @@
+---
+title: "Extraction des tweets"
+output: html_notebook
+---
+Import des librairies utiles.
+
+```{r}
+library(jsonlite)
+library(data.table)
+library(stringr)
+```
+
+
+# Données suicide
+
+Téléchargement des données.
+
+```{r}
+#Chemin où sont les données
+setwd("C:/Users/celia/Documents/MIASHS/M1/TER/Donnees/Données Twitter/")
+#Lien des différents tweets
+liste_json <- list.files(recursive = TRUE,"Données travaillées", pattern = ".json", full.names = TRUE)
+```
+
+Fonctions pour télécharger les données.
+
+```{r}
+#Fonction pour extraire les textes des tweets
+extraction_texte=function(tweet){
+  texte="err"
+  tweet_ext=fromJSON(tweet)
+  if ("extended_tweet" %in% names(tweet_ext)){
+    texte=tweet_ext$extended_tweet$full_text
+  } else {
+    if ("extended_tweet" %in% names(tweet_ext[["retweeted_status"]])){
+      texte=tweet_ext$retweeted_status$extended_tweet$full_text
+    } else {
+      texte=tweet_ext$text
+    }
+  } 
+  if (is.list(texte)==T){ 
+    print(texte)
+    }
+  return(unlist(texte))
+}
+
+#Fonction pour extraire le jour de création du tweet
+extraction_created=function(tweet){
+  tweet_ext=fromJSON(tweet)
+  return(tweet_ext$created_at)
+}
+
+#Fonction pour extraire l'id du tweet
+extraction_id=function(tweet){
+  tweet_ext=fromJSON(tweet)
+  return(tweet_ext$id_str)
+}
+
+```
+
+Import des données.
+
+```{r}
+#Chemin où sont les données
+setwd("C:/Users/celia/Documents/MIASHS/M1/TER/Donnees/Données Twitter/")
+#Date de création
+dt=as.data.frame(sapply(liste_json,extraction_created))
+#Id
+dt$id=sapply(liste_json,extraction_id)
+#Tweet
+dt$texte=sapply(liste_json,extraction_texte)
+#Transformation en data.table
+setDT(dt)
+#Nom des colonnes
+names(dt)=c("created_at","id","texte")
+#On enlève les doublons
+dt2=setorder(dt,texte)
+dt3=dt2[,.SD[1], by=texte][,.(id,created_at,texte)]
+#Rajout d'une colonne suicide ou non
+dt3[,suicide:=T]
+#On enlève les liens
+dt3[,texte:=stringr::str_replace_all(texte,"https://t.co/[:alnum:]{1,}[:space:]*","")][,texte:=stringr::str_replace_all(texte,"@([[:alnum:]]+)([[:space:]]?)","")][,texte:=stringr::str_replace_all(texte,"\n","")][,texte:=stringr::str_replace_all(texte,"\t","")]
+#Emplacement de l'enregistrement
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
+#Enregistrement
+write.csv(dt3,"C:/Users/celia/Documents/MIASHS/M1/terbis/donnees_twitter_TS.csv",row.names = FALSE)
+```
+
+# Données non suicide
+M
+Téléchargement des données.
+
+```{r}
+#Chemin où sont les données
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/Tweet hapy/")
+#Lien des différents tweets
+# liste des csv à importer :
+liste_json <- list.files(recursive = TRUE,"posts", pattern = ".json", full.names = TRUE)
+```
+
+Fonctions pour télécharger les données.
+
+```{r}
+#Fonction pour extraire le texte du tweet
+extraction_texte2=function(tweet){
+  tweet_ext=fromJSON(tweet)
+  return(tweet_ext$text)
+}
+
+#Fonction pour extraire la date de création du tweet
+extraction_created2=function(tweet){
+  tweet_ext=fromJSON(tweet)
+  return(unlist(tweet_ext$origin))
+}
+
+#Fonction pour extraire l'id du tweet
+extraction_id2=function(tweet){
+  tweet_ext=fromJSON(tweet)
+  return(unlist(tweet_ext$id))
+}
+
+```
+
+Import des données.
+
+```{r}
+#Chemin où sont les données
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/Tweet hapy/")
+#Date de création
+dt4=as.data.frame((t(t(sapply(liste_json,extraction_created2)))))
+#Id
+dt4$id=as.character(t(t(sapply(liste_json,extraction_id2))))
+#Tweet
+dt4$texte=as.character(unlist(sapply(liste_json,extraction_texte)))
+#Transformation en data.table
+setDT(dt4)
+#Nom des colonnes
+names(dt4)=c("created_at","id","texte")
+#On enlève les doublons
+dt5=setorder(dt4,texte)
+dt6=dt5[,.SD[1], by=texte][,.(id,created_at,texte)]
+#Rajout d'une colonne suicide ou non
+dt6[,suicide:=F]
+#On enlève les liens
+#On enlève les liens
+dt6[,texte:=stringr::str_replace_all(texte,"https://t.co/[:alnum:]{1,}[:space:]*","")][,texte:=stringr::str_replace_all(texte,"@([[:alnum:]]+)([[:space:]]?)","")][,texte:=stringr::str_replace_all(texte,"\n","")][,texte:=stringr::str_replace_all(texte,"\t","")]
+#Emplacement de l'enreistrement
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
+#Enregistrement
+write.csv(dt6,"C:/Users/celia/Documents/MIASHS/M1/terbis/donnees_twitter_pas_TS.csv",row.names = FALSE)
+```
+
+
+# Fichier toutes données confondues
+```{r}
+#On lie les tableaux
+dt7=rbind(dt3,dt6)
+#Emplacement de l'enreistrement
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
+#Enregistrement
+write.csv(dt7,"C:/Users/celia/Documents/MIASHS/M1/terbis/donnees_twitter_total.csv",row.names = FALSE)
+```
+
