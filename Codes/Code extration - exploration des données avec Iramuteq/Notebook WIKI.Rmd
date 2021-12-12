@@ -1,0 +1,67 @@
+---
+title: "Extraction des biographies wikipédia"
+output: html_notebook
+---
+
+Import des librairies utiles.
+
+```{r}
+library(data.table)
+library(stringr)
+```
+
+Import des jeux de données.
+
+```{r}
+#Dossier contenant les jeux de données wiki
+setwd("C:/Users/celia/Downloads/")
+#Suicides
+dt_suicides=fread("List_of_suicides.csv", sep = ",", header=T, encoding = "UTF-8")
+
+#Artistes écrivains
+dt_ecrivains=fread("Artist_authors.csv", sep = ",", header=T, encoding = "UTF-8")
+
+#Artistes politiques
+dt_artistes=fread("Political_artists.csv", sep = ",", header=T, encoding = "UTF-8")
+
+#Acteurs américains
+dt_acteurs=fread("American_film_actors.csv", sep = ",", header=T, encoding = "UTF-8")
+
+#Actrices américaines
+dt_actrices=fread("American_film_actresses.csv", sep = ",", header=T, encoding = "UTF-8")
+```
+
+Mise en forme des jeux.
+```{r}
+#Jeu complet excepté suicide
+dt_non_suicides=rbind(dt_ecrivains,dt_artistes,dt_acteurs,dt_actrices)
+#On enlève les lignes sans bio
+dt_suicides=dt_suicides[content!="no_matching_content",]
+dt_non_suicides=dt_non_suicides[content!="no_matching_content",]
+
+#On enlève les personnes suicidées de la liste des bio des personnes non suicidées
+dt_non_suicides=dt_non_suicides[!pages_names %in% unique(dt_suicides[,pages_names]),]
+
+#On enlève les doublons
+dt_suicides=dt_non_suicides[,.SD[1], by=content]
+dt_non_suicides=dt_non_suicides[,.SD[1], by=content]
+#Ajout catégorie suicide
+dt_suicides[,suicide:=T]
+dt_non_suicides[,suicide:=F]
+
+
+#On lie les 2
+dt_total=rbind(dt_suicides,dt_non_suicides)
+```
+
+
+Export du jeu de données
+```{r}
+#Emplacement de l'enreistrement
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
+#Enregistrement
+write.csv(dt_total,"C:/Users/celia/Documents/MIASHS/M1/terbis/donnees_wiki_total.csv",row.names = FALSE)
+```
+
+
+
