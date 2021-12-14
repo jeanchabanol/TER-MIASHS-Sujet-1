@@ -19,7 +19,7 @@ Téléchargement des données.
 #Chemin où sont les données
 setwd("C:/Users/celia/Documents/MIASHS/M1/TER/Donnees/Données Twitter/")
 #Lien des différents tweets
-liste_json <- list.files(recursive = TRUE,"Données travaillées", pattern = ".json", full.names = TRUE)
+liste_json <- list.files(recursive = TRUE,"Données réduites", pattern = ".json", full.names = TRUE)
 ```
 
 Fonctions pour télécharger les données.
@@ -79,7 +79,7 @@ dt3=dt2[,.SD[1], by=texte][,.(id,created_at,texte)]
 #Rajout d'une colonne suicide ou non
 dt3[,suicide:=T]
 #On enlève les liens
-dt3[,texte:=stringr::str_replace_all(texte,"https://t.co/[:alnum:]{1,}[:space:]*","")][,texte:=stringr::str_replace_all(texte,"@([[:alnum:]]+)([[:space:]]?)","")][,texte:=stringr::str_replace_all(texte,"\n","")][,texte:=stringr::str_replace_all(texte,"\t","")]
+dt3=dt3[,texte:=str_replace_all(texte,"https://t.co/[:alnum:]{1,}[:space:]*","")][,texte:=str_replace_all(texte,"@(([[:alnum:]_])+)([[:space:]]?)","")][,texte:=str_replace_all(texte,"\n","")][,texte:=str_replace_all(texte,"\t","")][is.na(texte)!=T & texte!="" & texte!=" " & texte!="na" & texte!="NA",]
 #Emplacement de l'enregistrement
 setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
 #Enregistrement
@@ -87,7 +87,7 @@ write.csv(dt3,"C:/Users/celia/Documents/MIASHS/M1/terbis/donnees_twitter_TS.csv"
 ```
 
 # Données non suicide
-M
+
 Téléchargement des données.
 
 ```{r}
@@ -143,7 +143,7 @@ dt6=dt5[,.SD[1], by=texte][,.(id,created_at,texte)]
 dt6[,suicide:=F]
 #On enlève les liens
 #On enlève les liens
-dt6[,texte:=stringr::str_replace_all(texte,"https://t.co/[:alnum:]{1,}[:space:]*","")][,texte:=stringr::str_replace_all(texte,"@([[:alnum:]]+)([[:space:]]?)","")][,texte:=stringr::str_replace_all(texte,"\n","")][,texte:=stringr::str_replace_all(texte,"\t","")]
+dt6=dt6[,texte:=stringr::str_replace_all(texte,"https://t.co/[:alnum:]{1,}[:space:]*","")][,texte:=stringr::str_replace_all(texte,"@(([[:alnum:]_])+)([[:space:]]?)","")][,texte:=stringr::str_replace_all(texte,"\n","")][,texte:=stringr::str_replace_all(texte,"\t","")][is.na(texte)!=T & texte!="" & texte!=" " & texte!="na" & texte!="NA",]
 #Emplacement de l'enreistrement
 setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
 #Enregistrement
@@ -159,5 +159,61 @@ dt7=rbind(dt3,dt6)
 setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
 #Enregistrement
 write.csv(dt7,"C:/Users/celia/Documents/MIASHS/M1/terbis/donnees_twitter_total.csv",row.names = FALSE)
+```
+
+
+
+
+#######################################################################################################
+
+#######################################################################################################
+
+# Visualisation de données
+
+#Suicides
+
+```{r}
+#On enlève les colonnes inutiles
+dt_suicides_v=dt3[,.(id,texte)]
+
+
+
+#On transforme les expressions
+dt_suicides_v=dt_suicides_v[,texte:=str_replace_all(texte,c("[:digit:]"="","&"="and","-"="_", "year old"="year_old","'"=" ","[:space:]+"=" ","\"\""="\"","#"=" ","%"="","//"=""))][!is.na(texte)==T & !texte=="",]
+
+
+#On rend le jeu lisible par iramuteq
+dt_suicides_v=dt_suicides_v[,texte:=iconv(texte,from = 'UTF-8', to = 'ASCII//TRANSLIT')][, sep_text:="****"][,id:=paste("*id_",id,sep="")][,texte:=paste("\n",texte, sep="")][,.(sep_text, id, texte)][texte!="\nNA",]
+```
+
+
+
+On exporte le jeu utilisable sur iramuteq.
+
+
+```{r}
+fwrite(dt_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Tweet/Iramuteq/Suicide/twitter_ts.txt", sep = " ", quote=F)
+```
+
+
+#Pas suicides
+
+```{r}
+#On enlève les colonnes inutiles
+dt_non_suicides_v=dt6[,.(id,texte)]
+
+#On transforme les expressions
+dt_non_suicides_v=dt_non_suicides_v[,texte:=str_replace_all(texte,c("[:digit:]"="","&"="and","-"="_", "year old"="year_old","'"=" ","[:space:]+"=" ","\"\""="\"","#"=" ", "%"=""))][!is.na(texte)==T & !texte=="",]
+
+
+#On rend le jeu lisible par iramuteq
+dt_non_suicides_v=dt_non_suicides_v[,texte:=iconv(texte,from = 'UTF-8', to = 'ASCII//TRANSLIT')][, sep_text:="****"][,id:=paste("*id_",id,sep="")][,texte:=paste("\n",texte, sep="")][,.(sep_text, id, texte)][texte!="\nNA",]
+```
+
+On exporte le jeu utilisable sur iramuteq.
+
+
+```{r}
+fwrite(dt_non_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Tweet/Iramuteq/Non_suicide/twitter_non_ts.txt", sep = " ", quote=F)
 ```
 

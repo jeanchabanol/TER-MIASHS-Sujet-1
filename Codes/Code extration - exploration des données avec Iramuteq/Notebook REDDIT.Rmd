@@ -1,0 +1,139 @@
+---
+title: "Extraction de reddit"
+output: html_notebook
+---
+Import des librairies utiles.
+
+```{r}
+library(jsonlite)
+library(data.table)
+library(stringr)
+```
+
+# Données suicide
+
+Téléchargement des données.
+
+```{r}
+#Chemin où sont les données
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/reddit/données/")
+# liste des csv à importer :
+liste_json <- list.files(recursive = TRUE,"Suicide", pattern = ".json", full.names = TRUE)
+# import des données :
+dt=as.data.frame(t(sapply(liste_json, fromJSON)))
+#Transformation en data.table
+dt=as.data.table(dt)
+```
+
+
+Mise en forme des données
+
+```{r}
+#Modification du DT
+#Suicide
+#Modification du DT
+dt_ts=dt[!subreddit=="u_RedditCareResources",][, ':='(suicide=T,content=paste(title,"\n",text,sep=""))][,.(suicide,subreddit,content)]
+#dt_ts= apply(dt_ts,2,as.character)
+dt_ts[, content:=as.character(content)][, subreddit:=as.character(subreddit)]
+#Nettoyage
+#On garde seulment les caractères autorisés
+dt_ts=dt_ts[,content:=iconv(content,from = 'UTF-8', to = 'ASCII//TRANSLIT')][is.na(content)!=T & content!="" & content!=" " & content!="na" & content!="NA",]
+
+#Emplacement de l'enreistrement
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
+
+#On enregistre en fichier
+write.csv(dt_ts,"donnees_reddit_TS.csv",row.names = FALSE)
+
+```
+
+# Pas suicide
+
+Import des données.
+
+```{r}
+#Chemin où sont les données
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/reddit/données/")
+# liste des csv à importer :
+liste_json <- list.files(recursive = TRUE,"Pas suicide", pattern = ".json", full.names = TRUE)
+# import des données :
+dt_non_ts=as.data.frame(t(sapply(liste_json, fromJSON)))
+#Transformation en data.table
+dt_non_ts=as.data.table(dt_non_ts)
+```
+
+Mise en forme des données.
+```{r}
+dt_non_ts=dt_non_ts[!subreddit=="u_RedditCareResources",][, ':='(suicide=T,content=paste(title,"\n",text,sep=""))][,.(suicide,subreddit,content)]
+dt_non_ts[, content:=as.character(content)][, subreddit:=as.character(subreddit)]
+#Nettoyage
+#On garde seulment les caractères autorisés
+dt_non_ts=dt_non_ts[,content:=iconv(content,from = 'UTF-8', to = 'ASCII//TRANSLIT')][is.na(content)!=T & content!="" & content!=" " & content!="na" & content!="NA",]
+
+#Emplacement de l'enreistrement
+setwd("C:/Users/celia/Documents/MIASHS/M1/terbis/")
+
+#On enregistre en fichier
+write.csv(dt_non_ts,"donnees_reddit_PAS_TS.csv",row.names = FALSE)
+```
+
+
+
+
+
+#######################################################################################################
+
+#######################################################################################################
+
+# Visualisation de données
+
+#Suicides
+
+```{r}
+#On enlève les colonnes inutiles
+dt_suicides_v=dt_ts
+dt_suicides_v=dt_suicides_v[,':='(sep_text="****",subreddit=paste("*subreddit_",subreddit,sep=""))][,.(sep_text,subreddit,content) ]
+
+
+
+#On transforme les expressions
+dt_suicides_v=dt_suicides_v[,content:=str_replace_all(content,c("[:digit:]"="","&"="and","-"="_", "year old"="year_old","'"=" ","[:space:]+"=" ","\"\""="\"","#"=" ","%"="","//"=""))][!is.na(content)==T & !content=="",]
+
+
+#On rend le jeu lisible par iramuteq
+dt_suicides_v=dt_suicides_v[,content:=paste("\n",content, sep="")][,.(sep_text, subreddit, content)][content!="\nNA",][-1,]
+```
+
+
+
+On exporte le jeu utilisable sur iramuteq.
+
+
+```{r}
+fwrite(dt_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Reddit 3/Suicide/Reddit_ts.txt", sep = " ", quote=F)
+```
+
+
+#Pas suicides
+
+```{r}
+#On enlève les colonnes inutiles
+dt_non_suicides_v=dt_non_ts
+dt_non_suicides_v=dt_non_suicides_v[,':='(sep_text="****",subreddit=paste("*subreddit_",subreddit,sep=""))][,.(sep_text,subreddit,content) ]
+
+
+
+#On transforme les expressions
+dt_non_suicides_v=dt_non_suicides_v[,content:=str_replace_all(content,c("[:digit:]"="","&"="and","-"="_", "year old"="year_old","'"=" ","[:space:]+"=" ","\"\""="\"","#"=" ","%"="","//"=""))][!is.na(content)==T & !content=="",]
+
+
+#On rend le jeu lisible par iramuteq
+dt_non_suicides_v=dt_non_suicides_v[,content:=paste("\n",content, sep="")][,.(sep_text, subreddit, content)][content!="\nNA",][-1,]
+```
+
+On exporte le jeu utilisable sur iramuteq.
+
+
+```{r}
+fwrite(dt_non_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Reddit 3/Non_suicide/Reddit_non_ts.txt", sep = " ", quote=F)
+```

@@ -120,6 +120,61 @@ fwrite(dt_non_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Wiki/Iramut
 
 
 
+#######################################################################################################
+
+#######################################################################################################
+
+# Visualisation de données
+
+#Suicides
+
+```{r}
+#On enlève les colonnes inutiles
+dt_suicides_v=dt_suicides[,.(pages_names, subcategory, content)]
+
+#On rend le jeu lisible par iramuteq
+dt_suicides_v=dt_suicides_v[, sep_text:="****"][, subcategory:=paste("*cat_",subcategory,sep="")][, pages_names:=paste("*page_",pages_names, sep="")][,content:=paste("\n",content, sep="")][,content:=iconv(content,from = 'UTF-8', to = 'ASCII//TRANSLIT')][,pages_names:=iconv(pages_names,from = 'UTF-8', to = 'ASCII//TRANSLIT')][,subcategory:=iconv(subcategory,from = 'UTF-8', to = 'ASCII//TRANSLIT')][,.(sep_text, pages_names, subcategory, content)]
+
+#On transforme les expressions
+dt_suicides_v=dt_suicides_v[,content:=str_replace_all(content,c("[:digit:]"=""," & "="_and_","-year"="year", "-mid"="mid","-"="_", "year old"="year_old","'"=" ","Washington ,  D . C ."="Washington_DC", "Washington,_D.C"="Washington_DC", "New York City"="New_York_City","New York"="New_York","\n( *)"="\n", "([:space:]*[.][:space:]*)"=". ","([:space:]*[,][:space:]*)"=", ","([:space:]*[;][:space:]*)"=" ; ","([:space:]*[:][:space:]*)"=" : ","\"\""="\"","Madame d Angoulême"="Madame_d_Angoulême", "St. "="St_", "\\(_\\)"=""))]
+dt_suicides_v=dt_suicides_v[,pages_names:=str_replace_all(pages_names,c("[:digit:]"=""," & "="_and_","-year"="year", "-mid"="mid","-"="_", "year old"="year_old","'"=" ","Washington ,  D . C ."="Washington_DC", "Washington,_D.C"="Washington_DC", "New York City"="New_York_City","New York"="New_York","\n( *)"="\n", "([:space:]*[.][:space:]*)"=". ","([:space:]*[,][:space:]*)"=", ","([:space:]*[;][:space:]*)"=" ; ","([:space:]*[:][:space:]*)"=" : ","\"\""="\"","Madame d Angoulême"="Madame_d_Angoulême", "St. "="St_"))]
+dt_suicides_v=dt_suicides_v[,subcategory:=str_replace_all(subcategory,c("[:digit:]"=""," & "="_and_","-year"="year", "-mid"="mid","-"="_", "year old"="year_old","'"=" ","Washington ,  D . C ."="Washington_DC", "Washington,_D.C"="Washington_DC", "New York City"="New_York_City","New York"="New_York","\n( *)"="\n", "([:space:]*[.][:space:]*)"=". ","([:space:]*[,][:space:]*)"=", ","([:space:]*[;][:space:]*)"=" ; ","([:space:]*[:][:space:]*)"=" : ","\"\""="\"","Madame d Angoulême"="Madame_d_Angoulême", "St. "="St_"))]
+
+```
+
+On exporte le jeu utilisable sur iramuteq.
+
+
+```{r}
+fwrite(dt_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Wiki/Iramuteq/Suicide/wiki_ts.txt", sep = " ", quote=F)
+```
+
+
+#Pas suicides
+
+```{r}
+#On enlève les colonnes inutiles
+dt_non_suicides_v=dt_non_suicides[,.(pages_names, subcategory, content)]
+
+#On rend le jeu lisible par iramuteq
+dt_non_suicides_v=dt_non_suicides_v[, sep_text:="****"][, subcategory:=paste("*cat_",subcategory,sep="")][, pages_names:=paste("*page_",pages_names, sep="")][,content:=paste("\n",content, sep="")][,content:=iconv(content,from = 'UTF-8', to = 'ASCII//TRANSLIT')][,pages_names:=iconv(pages_names,from = 'UTF-8', to = 'ASCII//TRANSLIT')][,subcategory:=iconv(subcategory,from = 'UTF-8', to = 'ASCII//TRANSLIT')][,.(sep_text, pages_names, subcategory, content)]
+
+#On transforme les expressions
+dt_non_suicides_v=dt_non_suicides_v[,content:=str_replace_all(content,c("[:digit:]"=""," & "="_and_","-year"="year", "-mid"="mid","-"="_", "year old"="year_old","'"=" ","Washington ,  D . C ."="Washington_DC", "Washington,_D.C"="Washington_DC", "New York City"="New_York_City","New York"="New_York","\n( *)"="\n", "([:space:]*[.][:space:]*)"=". ","([:space:]*[,][:space:]*)"=", ","([:space:]*[;][:space:]*)"=" ; ","([:space:]*[:][:space:]*)"=" : ","\"\""="\"","Madame d Angoulême"="Madame_d_Angoulême", "St. "="St_", "\\(_\\)"=""))]
+dt_non_suicides_v=dt_non_suicides_v[,pages_names:=str_replace_all(pages_names,c("[:digit:]"=""," & "="_and_","-year"="year", "-mid"="mid","-"="_", "year old"="year_old","'"=" ","Washington ,  D . C ."="Washington_DC", "Washington,_D.C"="Washington_DC", "New York City"="New_York_City","New York"="New_York","\n( *)"="\n", "([:space:]*[.][:space:]*)"=". ","([:space:]*[,][:space:]*)"=", ","([:space:]*[;][:space:]*)"=" ; ","([:space:]*[:][:space:]*)"=" : ","\"\""="\"","Madame d Angoulême"="Madame_d_Angoulême", "St. "="St_"))]
+dt_non_suicides_v=dt_non_suicides_v[,subcategory:=str_replace_all(subcategory,c("[:digit:]"=""," & "="_and_","-year"="year", "-mid"="mid","-"="_", "year old"="year_old","'"=" ","Washington ,  D . C ."="Washington_DC", "Washington,_D.C"="Washington_DC", "New York City"="New_York_City","New York"="New_York","\n( *)"="\n", "([:space:]*[.][:space:]*)"=". ","([:space:]*[,][:space:]*)"=", ","([:space:]*[;][:space:]*)"=" ; ","([:space:]*[:][:space:]*)"=" : ","\"\""="\"","Madame d Angoulême"="Madame_d_Angoulême", "St. "="St_"))]
+
+```
+
+On exporte le jeu utilisable sur iramuteq.
+
+
+```{r}
+fwrite(dt_non_suicides_v, "C:/Users/celia/Documents/MIASHS/M1/terbis/Wiki/Iramuteq/Non_suicide/wiki_pas_ts.txt", sep = " ", quote=F)
+```
+
+
+
 
 
 
